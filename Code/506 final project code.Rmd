@@ -1,5 +1,3 @@
-# ANLY506
-
 ---
 title: "506 final project"
 author: "xue luo"
