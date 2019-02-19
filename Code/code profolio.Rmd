@@ -1,0 +1,496 @@
+---
+title: "code profolio"
+author: "xue luo"
+date: "2/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Data Import & Descriptive analysis
+## install package
+```{r echo=T, results='hide'}
+library(nycflights13)
+library(tidyverse)
+```
+
+## file manipulation
+```{r echo=T, results='hide'}
+# Load data 
+mydata<-read.csv("/Users/luoxue/Desktop/HU/ANLY 506 Exploratory Data Analytics/Exploratory Data Analysis with R/income.csv")
+
+# Load data and convert data frame to tibble
+library(dplyr)
+library(tibble)
+income <- as.tibble(mydata)
+
+# Send the code to the Console so the objects are stored in your current workspace. Use the ls() function to see that the objects are indeed stored in your workspace
+#ls()
+
+#Using write.table(), save the dataframe as a tab–delimited text file called club.txt to the data folder you created in Question 
+#write.table(x= club.df, file = "club.txt", sep="\t")
+
+#Save the three objects a, b, c, and club.df to an .RData file called “myobjects.RData” in your data folder using save().
+#save(a, b, c, file = "data/myobjects.RData")
+
+#load the objects back into your workspace from the myobjects.RData file using the load() function.
+#load(file="myobjects.RData")
+
+#Clear workspace. Then, run the ls() function to make sure the objects are gone.
+#rm(list = ls()) 
+#ls()
+
+# save the dataframe as a csv file
+#write.csv(pirates,file = "pirates.csv",row.names = FALSE)
+#read.csv("pirates.csv")
+```
+## create test data
+```{r echo=T, results='hide'}
+###1. the effects of the type of animal on peoplee's retching times
+Participant<-c("P1", "P2", "P3", "P4", "P5", "P6", "P7","P8" )
+Stick_Insect <- c(8,9,6,5,8,7,10,12)
+Kangaroo_Testicle<- c(7,5,2,3,4,5,2,6)
+Fish_Eye<- c(1,2,3,1,5,6,7,8)
+Witchetty_Grub<- c(6,5,8,9,8,7,2,1)
+
+BushData <- data.frame(Participant,Stick_Insect,Kangaroo_Testicle,Fish_Eye,Witchetty_Grub)
+print(BushData)
+
+###2. create new objects called a, b, and c. 
+a <- data.frame("sex" = c("m", "f", "m"),
+                "age" = c(19, 43, 25),
+                "favorite.movie" = c("Moon", "The Goonies", "Spice World"))
+
+# Create a dataframe from named columns
+data.frame("age" = c(19, 21), sex = c("m", "f"))
+
+###3.  create a Dataframe in R
+pirates <- data.frame("Name" = c("Astrid","Lea", "Sarina", "Remon", "Letizia", "Babice","Jonas","Wendy","Niveditha","Gioia") 
+                      , "Sex" = c("F","F","F","M","F","F","M","F","F","F"), "Age" = c(30,25,25,29,22,22,35,19,32,21),
+                      "Superhero" = c("Batman","Superman","Batman","Spiderman","Batman","Antman","Batman","Superman","Maggott","Superman"),
+                      "Tattoos"= c(11,15,12,5,65,3,9,13,900,0))
+
+###4. we want 8 sets of 4 scores, so in total 32 cases
+Participant<-gl(8, 4, labels = c("P1", "P2", "P3", "P4", "P5", "P6", "P7","P8" ))
+# we want 4 sets of 1 score, and repeat until reach 32 cases
+#Animals <- gl(4,1,32, labels = c("Stick Insect", "Kangaroo Testicle", "Fish Eye", "Witchetty Grub"))
+#Retch<-c(8, 7, 1, 6, 9, 5, 2, 5, 6, 2, 3, 8, 5, 3, 1, 9, 8, 4, 5, 8, 7, 5, 6, 7, 10, 2, 7, 2, 12, 6, 8, 1)
+#longBush <- data.frame(Participant,Animals,Retch)
+# print(longBush)
+
+# Create a matrix from a vector x
+# matrix(x, nrow, ncol, byrow)
+```
+## view data and decriptive analysis
+```{r echo=T, error = TRUE}
+#data(flights)
+# Show the structure of the dataframe (ie., dimensions and classes) and summary statistics
+#summary(flights)
+#str(flights)
+
+# access the names of a dataframe
+#names(dataframe)# select flights for December 30, excluding FALSE and NA values
+#a <-filter(flights,month=="12" & day=="30")
+
+# check for null values for column with departure delays
+#b <-filter(flights,month=="12" & day=="30" & is.na(dep_delay))
+
+# calculate the mean for departure delays, remove NA values,and set this parameter to TRUE. 
+#mean(a$dep_delay,trim = 0, na.rm = TRUE)
+
+# Calculate mean, trimmed mean (10%), and median for Male workers salary (M_weekly). 
+# Make sure to set null value parameter to TRUE
+#View(mydata)
+#mean(mydata$M_weekly,trim = 0, na.rm = TRUE)
+#mean(mydata$M_weekly,trim = 0.1, na.rm = TRUE)
+#median(mydata$M_weekly,trim = 0, na.rm = TRUE)
+
+#calculate weighted median of Male weekly income taking into account their Industry
+#install.packages("matrixStats",repos = "http://cran.us.r-project.org")
+#library(matrixStats)
+#as.numeric(mydata$M_workers)
+#weightedMedian(mydata[["M_weekly"]], w=mydata[["Industry"]], na.rm = TRUE)
+#edit(weightedMedian) #access functions from libraries
+#weighted_median <- function(x, w, ..., na.rm = FALSE){
+  
+ # if(na.rm){
+    
+  #  df_omit <- na.omit(data.frame(x, w))
+    
+  #  return(weightedMedian(df_omit$x, df_omit$w, ...))
+    
+#  } 
+  
+#  weightedMedian(x, w, ...)
+  
+#}
+#weighted_median(mydata[["M_weekly"]], w=mydata[["Industry"]]) 
+
+# Calculate standard deviation, interquartile range, and median absolute standard deviation (MAD) for female workers. 
+sd(mydata[["F_workers"]])
+IQR(mydata[["F_workers"]])
+mad(mydata[["F_workers"]])
+
+# Calculate the standard deviation of diff column
+ round(sd_diff, 2)
+
+# Round your value up to two digits
+ round(sd_diff, 2)
+
+# calculate percentile
+data("faithful")
+quantile(faithful$eruptions)
+
+# Select columns by name
+select(flights, year, month, day)
+
+# matches names that begin with “abc”.
+starts_with("abc")
+
+# matches names that begin with “abc”.
+ends_with("xyz")
+
+# matches names that contain “ijk”.
+ contains("ijk")
+
+# matches x1, x2 and x3.
+num_range("x", 1:3)
+
+# Print the first few rows (or last few rows).
+head(x),tail(x)
+
+# Count the number of rows and columns
+nrow(x), ncol(x), dim(x)
+
+# Show the row (or column) names
+rownames(), colnames(), names()
+
+# Print the first few rows (or last few rows).
+head(x),tail(x)
+
+# Count the number of rows and columns
+nrow(x), ncol(x), dim(x)
+
+# Show the row (or column) names
+rownames(), colnames(), names()
+```
+
+
+# Data Cleaning
+### check missing values
+```{r echo=T, error = TRUE}
+# see if missing is a problem in the current data:
+missing <- data.frame(is.na(surgeryData))
+pmissing <- apply(missing, 2, mean)
+names(missing)[pmissing > 0]<-paste(names(surgeryData)[pmissing >0], "NA", sep="")
+surgeryData<-cbind(surgeryData,missing[pmissing>0])
+print(round(pmissing,3))
+
+# to determine if a value is missing, use is.na():
+is.na(x)
+```
+
+### reformat dataset
+```{r echo=T, results='hide'}
+# create test data, the effects of the type of animal on peoplee's retching times
+Participant<-c("P1", "P2", "P3", "P4", "P5", "P6", "P7","P8" )
+Stick_Insect <- c(8,9,6,5,8,7,10,12)
+Kangaroo_Testicle<- c(7,5,2,3,4,5,2,6)
+Fish_Eye<- c(1,2,3,1,5,6,7,8)
+Witchetty_Grub<- c(6,5,8,9,8,7,2,1)
+
+BushData <- data.frame(Participant,Stick_Insect,Kangaroo_Testicle,Fish_Eye,Witchetty_Grub)
+print(BushData)
+
+# reformat test data
+library(reshape2)
+longBush<-melt(BushData, id = "Participant", measured = c("stick_insect",
+                                                          "kangaroo_testicle", "fish_eye", "witchetty_grub"))
+names(longBush)<-c("Participant", "Animal", "Retch")
+
+longBush$Animal<-factor(longBush$Animal, labels = c("Stick Insect", "Kangaroo
+Testicle", "Fish Eye", "Witchetty Grub"))
+
+print(longBush)
+```
+
+# data transformation
+```{r echo=T, error = TRUE}
+# Check dataset 
+income %>% glimpse()
+
+# Add a new column "diff" - a difference between male weekly income and female weekly income.
+income<-mutate(income,diff=M_weekly - F_weekly)
+
+# Combine vectors as columns in a matrix
+cbind(a, b, c)
+
+# Combine vectors as rows in a matrix
+rbind(a, b, c)
+
+# Use filter() to create a new variable for male weekly salary > 2000
+m_salary_more_than_2000 <-filter(income, M_weekly>2000)
+m_salary_more_than_2000
+
+# Create a new df with only the rows of sex, where sex equals female
+female<- pirates [pirates$sex=="female",]
+female
+mean(female$height)
+
+ subset/ slice
+a <-table(pirates$sex)
+prop.table(a) 
+b=subset(x = pirates,
+       subset = pirates$sex=="female")
+mean(b$height)
+
+# Create a new df with only the rows of ToothGrowth, where supp equals OJ and dose < 1
+ToothGrowth.OJ.a <- ToothGrowth[ToothGrowth$supp == "OJ" &
+                                ToothGrowth$dose < 1, ]
+
+# change data type
+pirates$Name <-as.character(pirates$Name)
+pirates$Sex<-as.character(pirates$Sex)
+pirates$Superhero<-as.character(pirates$Superhero)
+str(pirates)
+
+# add a new column
+library(dplyr) 
+pirates<-mutate(pirates, Tatoos.Age=Tattoos/Age)
+
+# Change name of 1st column of df to "a"
+names(df)[1] <- "a"
+
+# round the output by 2 decimals
+round(quantile (faithful$eruptions), 2)    
+```
+
+# PLOTTING
+```{r,error = TRUE}
+# import the "student mat"" dataset
+mydata <-read.csv("/Users/luoxue/Desktop/HU/ANLY 512 Data Visualization/Assignment 6/ccrb_datatransparencyinitiative.csv",header=TRUE)
+# install ggplot2 package
+library(ggplot2)
+```
+# scatterplot
+```{r,error = TRUE}
+ggplot(data = mydata) + geom_point(mapping = aes(x = location, y = receivedyear))
+```
+
+# draw bar chart by borough
+```{r,error = TRUE}
+g <- ggplot(mydata, aes(Borough))
+g+geom_bar()
+```
+# draw a flipped bar chart by borough
+```{r}
+#g <- ggplot(mydata, aes(location))
+#g+geom_bar()+coord_flip()
+```
+
+```{r}
+# make Complaint Filed Mode a variable
+filedmode<-mydata$Complaint.Filed.Mode
+# make transmission a variable
+receivedyear <-mydata$Received.Year
+```
+
+# bar chart 
+```{r}
+g <- ggplot(mydata, aes(receivedyear))
+# fill stacked bar chart by transmission
+g + geom_bar(aes(fill = filedmode))
+```
+
+# a pie chart
+```{r}
+fullinvestigate<-table(mydata$Is.Full.Investigation)
+pie(fullinvestigate,main="If case is fullly-investigated")
+```
+###boxplot
+```{r error = TRUE}
+b<-ggplot(mydata,aes(outcome,yearlength))
+b+geom_boxplot()
+
+#### compare means of different groups using boxplot
+p <- ggplot(longBush,aes(x=Animals,y=Retch))+
+  geom_boxplot()
+p
+```
+
+# EXPLORE DATA
+#### get descriptive statistics for separate groups
+```{r echo=T, error = TRUE}
+library(pastecs)
+by(longBush$Retch, longBush$Animal, stat.desc)
+#if have more than one independent variable, use list()
+by(speedData$dateRating, list(speedData$looks, speedData$personality,
+speedData$gender), stat.desc, basic = FALSE)
+```
+
+#### check dependent variable distribution
+```{r echo=T, error = TRUE}
+plot(density(RandomExample1Class$loss))
+log((RandomExample1Class$loss+4)
+```
+
+# K-means Cluster
+```{r error = TRUE}
+library(tidyverse)  # data manipulation
+library(cluster)    # clustering algorithms
+library(factoextra) # clustering algorithms & visualization
+df <- USArrests
+df <- na.omit(df)
+
+# Clustering Distance Measures
+# get_dist() for computing a distance matrix between the rows of a data matrix. default -Euclidean
+# fviz_dist: for visualizing a distance matrix
+distance <- get_dist(df)
+fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+
+# Computing k-means clustering
+# group the data into two clusters (centers = 2)， nstart = 25 will generate 25 initial configurations
+k2 <- kmeans(df, centers = 2, nstart = 25)
+str(k2)
+
+# illustration of the clusters
+fviz_cluster(k2, data = df)
+
+```
+### multiple charts for comparison
+```{r error = TRUE}
+k3 <- kmeans(df, centers = 3, nstart = 25)
+k4 <- kmeans(df, centers = 4, nstart = 25)
+k5 <- kmeans(df, centers = 5, nstart = 25)
+
+p1 <- fviz_cluster(k2, geom = "point", data = df) + ggtitle("k = 2")
+p2 <- fviz_cluster(k3, geom = "point",  data = df) + ggtitle("k = 3")
+p3 <- fviz_cluster(k4, geom = "point",  data = df) + ggtitle("k = 4")
+p4 <- fviz_cluster(k5, geom = "point",  data = df) + ggtitle("k = 5")
+
+library(gridExtra)
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+
+```
+### function to compute average silhouette for k clusters
+```{r error = TRUE}
+fviz_nbclust(df, kmeans, method = "silhouette")
+```
+### compute gap statistic
+```{r error = TRUE}
+set.seed(123)
+gap_stat <- clusGap(df, FUN = kmeans, nstart = 25,
+                    K.max = 10, B = 50)
+# Print the result
+print(gap_stat, method = "firstmax")
+```
+
+
+# ANALYSIS CODE FROM OTHER CLASSES
+#### repeated-measures ANOVA
+#### Choosing contrasts
+```{r echo=T, error = TRUE}
+#Let’s imagine that we predicted that because eyes and testicles resemble human body parts, celebrities would be more disgusted by eating them than witchetty grubs and stick (which are eaten whole and don’t resemble anything very human). Our first contrast might, therefore, compare the fish eye and kangaroo testicle (combined) to the witchetty grub and stick insect (combined). We need a second contrast then to separate the fish eye from the kangaroo testicle, and a third contrast to separate the witchetty grub from the stick insect.
+PartvsWhole<-c(1, -1, -1, 1)
+TesticlevsEye<-c(0, -1, 1, 0)
+StickvsGrub<-c(-1, 0, 0, 1)
+contrasts(longBush$Animal)<-cbind(PartvsWhole, TesticlevsEye, StickvsGrub)
+
+longBush$Animal
+```
+
+####  ezANOVA : NEED to consider sphericity.
+```{r echo=T, error = TRUE}
+library(ez)
+
+# newModel<-ezANOVA(data = dataFrame, dv = .(outcome variable), wid = .(variable that identifies participants), within = .(repeated measures predictor1,2,3...), between = .(between-group predictors), detailed = FALSE, type = 2)
+
+bushModel<-ezANOVA(data = longBush, dv = .(Retch), wid = .(Participant),
+within = .(Animal), detailed = TRUE, type = 3)
+
+bushModel
+# so we reject the assumption of sphericity that the variances of the differences between levels are equal. W = 0.14, p = .047.
+# The significance of F is .026, which is significant because it is less than the criterion value of .05: We can, therefore, conclude that there was a significant difference between the four animals in their capacity to induce retching when eaten. However, this main test does not tell us which animals differed from each other.
+```
+####  lme(): a multilevel model is simply a regression or linear model that considers dependency in the data.NO NEED to consider sphericity.
+```{r echo=T, results='hide'}
+library(nlme)
+# newModel <-lme(outcome ~ predictor(s), random = random effects, data = dataFrame, method = "ML")
+bushModel<-lme(Retch ~ Animal, random = ~1|Participant/Animal, data = longBush, method = "ML")
+summary(bushModel)
+##random = ~1|Participant/Animal means that if you look at the variable Participant within the variable Animal (that's what the'Participant/Animal' bit means), then overall levels (that's represented by 1) of the outcome (time to retch) vary. By including this term, we're telling the model that data with the same value of Participant within different levels of Animal are dependent (i.e., from the same person).
+
+## If we want to test whether Animal had an overall effect, then we need to compare the model that we have just created to one in which the predictor is absent. To do this, we create another model, but rather than include Animal as a predictor, we include only the intercept (which we denote with '1').
+baseline<-lme(Retch ~ 1, random = ~1|Participant/Animal, data = longBush, method = "ML")
+```
+##### different types of "magnitude|country/lab""- covariance matrices (need to use lme).
+```{r echo=T, error = TRUE}
+#We can allow correlation between our random slopes and intercepts:
+magnitude|country/lab # the slope is correlated with the intercepts
+magnitude-1|country/lab # the slope is not correlated with intercepts
+magnitude+0|country/lab # no random intercepts just slopes
+
+```
+
+### compare the two models. 
+```{r echo=T, error = TRUE}
+# 1. ANOVA
+# If P value significant, means the extra variable in the complex model has a significant effect on dependent variable
+anova(baseline, bushModel)
+
+# 2. Akaike or Bayesian Information Criterion (AIC/BIC).
+```
+
+####  lmer() : need to install the lmerTest package
+#####  1. With interaction
+```{r echo=T, error = TRUE}
+model <- lmer(v2~Perspective*Deliberation_Time+(Perspective*Deliberation_Time|Subject), data = RepeatedANOVAExample)
+# From our time with regression you should know what our fixed effects are doing: Main effect of perspective, time, and their interaction.
+
+# In the brackets is how we specify a random effect which in our case is subject (our source of repeated measurement). This allows for separate intercepts for each participant.
+
+#To the left of the | indicates random slopes - allowing the fixed effects to vary from participant to participant.
+
+#We cannot include random slopes/effects when we don't have at least two replications of the comparison of interest occurring within a source of repeated measurement. For example, if we want a random effect of some two-level predictor we need 4 observations (2 when the predictor is at its first level and 2 when its at its second level).
+
+lmer(v2 ~ Perspective * Deliberation_Time + (1|Subject), data = RepeatedANOVAExample)
+
+#This model only includes separate intercepts for participants, not slopes. If you compare this reduced model to the full model you will see that the fixed effects are more signficiant here.
+
+# This is because some of the variance that was explained by individual participants is now being put into the fixed effects explanatory power. As will discuss in the coming lectures its advisable to include random slopes when possible to avoid overestimating the significance of fixed effects.
+
+```
+#####  2. Without interaction
+```{r echo=T, error = TRUE}
+model <- lmer(liking~ad + (1|subject), data = data)
+```
+##### 3. Nesting
+```{r echo=T, error = TRUE}
+model <-lmer(l2 ~ magnitude +(magnitude|country/lab), data = RandomExample1Class)
+
+# In this model we have the main effect of magnitude, we have random intercepts for country and labs within countries, and we also have random slopes for each country and lab within country.
+
+```
+
+##### Interaction plot
+```{r echo=T, error = TRUE}
+# if model <- Y~X1+X2+X1*X2, to plot interaction X1*X2
+interaction.plot(X1,X2,Y)
+```
+
+
+#### post hoc tests
+##### pairwise.t.test using "bonferroni"
+```{r echo=T, error = TRUE}
+# we need to add the option paired = TRUE to reflect the fact that means are dependent (so, we’re asking for paired t-tests rather than independent t-tests).
+pairwise.t.test(longBush$Retch, longBush$Animal, paired = TRUE, p.adjust.method = "bonferroni")
+# We can see that the time to retch was significantly longer after eating a stick insect compared to a kangaroo testicle (p = .012) and a fish eye (p = .006)
+```
+##### check residuals
+```{r echo=T, error = TRUE}
+qqnorm(residuals(bushModel))
+qqline(residuals(bushModel))
+shapiro.test(residuals(bushModel))
+```
+

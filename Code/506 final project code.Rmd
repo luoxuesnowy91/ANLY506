@@ -8,18 +8,101 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Purpose of the project
+# 1. PURPOSE OF THE PROJECT
 ### This project is to study the chronological change of human warefare around the world and see if the development vary by different continents. I will first study the global trend of popoluation size, life span, and income increase, and then make comparison among continents.
 
-# view and summarize data
-### This global dataset contains demographic information of 197 countries (including 1 as other) with life expasion, population, income and region from 1800 to 2015. In total there are 41284 observations, and each country has 216 observations, and the "other" country has 19900.
+# 2. VIEW AND CLEAN DATA
+### This global dataset contains demographic information of 197 countries (including 1 as other) with life span, population, income and region from 1800 to 2015. In total there are 41284 observations, and each country has 216 observations, and the "other" country has 19900.
 
 ```{r}
 gapminderdata<- read.csv("/Users/luoxue/Desktop/HU/ANLY 506 Exploratory Data Analytics/final_project/Data/gapminder.csv")
-View(gapminderdata)
+head(gapminderdata)
+```
+```{r}
 str(gapminderdata)
+```
+
+```{r}
 summary(gapminderdata)
+```
+### Only 197 countries are listed, and the rest 19900 observations are listed as "others"
+```{r}
 summary(gapminderdata$Country)
+```
+```{r}
+# check unique values of countries
 length(unique(gapminderdata$Country))
 ```
+
+## 2.1 check and remove missing values, convert population from factor to numeric
+```{r}
+# count missing values of all
+table(is.na(gapminderdata))
+# count missing values by column
+colSums(is.na(gapminderdata))
+# remove missing values in population and income, and generate new dataset called newdata
+gapminderdata$population<-as.numeric(as.character(gapminderdata$population)) # convert population from factor to numeric first
+newdata <- na.omit(gapminderdata)
+head(newdata)
+str(newdata)
+```
+
+# 3. ANALYSIS
+## 3.1 global popoluation size has increased over the years as shown below, and the two leading countries are China and India.
+```{r}
+# draw a line chart of population change by year and grouped by country.
+library(ggplot2)
+ggplot(newdata, aes(x = Year, y = population,group=Country))+
+  geom_line()+
+  geom_point()
+```
+
+### find out which country has the largest and second largest population
+```{r}
+# identify which row in dataframe
+which.max(newdata$population) 
+# extract the exact row and find the country is India
+newdata[5423,] 
+# create new data without india
+withoutIndia <-subset(newdata,Country!="India")
+# find out China has the second largest population
+withoutIndia[which.max(withoutIndia$population) ,]
+```
+
+
+## 3.2 the range of global life span has increase over the years from 25-40 years in 1800, to 50-85 years in 2000. People tend to live longer in general.
+```{r}
+# draw a scatterplot of life span by year
+ggplot(data = newdata) + 
+  geom_point(mapping = aes(x = Year, y = life))
+```
+
+### By comparing means of life span across different continents, we find that Europe and Central Asia is doing the best, and South Asia and Sub-Saharan African are doing the worst over the years.
+```{r}
+# draw the boxplot
+ggplot(newdata, aes(x=Year, y = life, fill=region))+
+  geom_boxplot() +
+  theme(legend.position="top")
+```
+
+
+## 3.3 Income increase by year in general. Middle East& North Africa, East Asia& Pacific and Eurip & central Asia are leading the run.
+```{r}
+# draw scatterplot of income by year and continents
+ggplot(newdata, aes(x = Year, y = income,group=region))+
+  geom_point(aes(color = region))
+```
+
+### take a closer look at data from 1950 to 2015
+```{r}
+ggplot(newdata, aes(x = Year, y = income,group=region))+
+  xlim(1950,2015)+
+  geom_point(aes(color = region))
+```
+
+# 4. CONCLUSION
+### In sum, based on the grahps shown above, we can see that as time pass by, human warefare around the world has increase gradually, though the development speed vary by different continents. For popoluation, China and India have the most pupulation increase, for life span, Europe and America have the longest, and for income, Middle East& North Africa, East Asia& Pacific and Eurip & central Asia are leading the run.
+
+
+# html link: http://rpubs.com/Aprilmeow/468804
 

@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/468409/b98ca0fc335b4d1bb32aab93ce1c4156
+bundleId: https://api.rpubs.com/api/v1/document/468409/b98ca0fc335b4d1bb32aab93ce1c4156
+url: http://rpubs.com/Aprilmeow/468409
+when: 1550441948.85186
